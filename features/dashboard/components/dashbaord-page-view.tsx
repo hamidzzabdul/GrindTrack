@@ -4,50 +4,22 @@ import { useMemo, useState } from "react";
 import { Activity, Flame, ShieldCheck, HeartPulse } from "lucide-react";
 import { PageContainer } from "@/components/layout/page-container";
 import { PageIntro } from "@/components/shared/page-intro";
-import { Panel } from "@/components/shared/panel";
-import { SectionHeading } from "@/components/shared/section-heading";
 import { StatCard } from "@/components/shared/stat-card";
 import { TodayMission } from "./today-mission";
 import { HabitProgressGrid } from "./habit-progress-grid";
-import type { MissionTask } from "./today-mission";
 import { WorkoutFocusCard } from "@/features/dashboard/components/workout-focus-card";
 import { WeeklyConsistencyChart } from "@/features/progress/components/weekly-consistency-chart";
-
-const initialTasks: MissionTask[] = [
-  {
-    id: "1",
-    title: "Morning Boxing Session",
-    subtitle: "Skill work, bag rounds, and footwork",
-    status: "done",
-  },
-  {
-    id: "2",
-    title: "Evening Push + Calisthenics",
-    subtitle: "Strength work scheduled for later today",
-    status: "pending",
-  },
-  {
-    id: "3",
-    title: "Coding 2 Hours",
-    subtitle: "Focus block for building Discipline OS",
-    status: "pending",
-  },
-  {
-    id: "4",
-    title: "Quran 1 Hour",
-    subtitle: "Daily recitation and reflection target",
-    status: "pending",
-  },
-  {
-    id: "5",
-    title: "Diet On Track",
-    subtitle: "Hit meals, protein, and hydration targets",
-    status: "pending",
-  },
-];
+import {
+  baseWeeklyConsistencyData,
+  dashboardWorkoutFocus,
+  initialDashboardTasks,
+} from "../constants/dashboard.mock";
+import type { DashboardMissionTask } from "../types/dashboard.types";
 
 export function DashboardPageView() {
-  const [tasks, setTasks] = useState<MissionTask[]>(initialTasks);
+  const [tasks, setTasks] = useState<DashboardMissionTask[]>(
+    initialDashboardTasks,
+  );
 
   const completedCount = useMemo(
     () => tasks.filter((task) => task.status === "done").length,
@@ -119,6 +91,14 @@ export function DashboardPageView() {
     [codingDone, quranDone],
   );
 
+  const weeklyConsistencyData = useMemo(() => {
+    return baseWeeklyConsistencyData.map((item, index, arr) =>
+      index === arr.length - 1
+        ? { ...item, value: completionPercentage }
+        : item,
+    );
+  }, [completionPercentage]);
+
   function handleToggleTask(id: string) {
     setTasks((currentTasks) =>
       currentTasks.map((task) =>
@@ -131,19 +111,6 @@ export function DashboardPageView() {
       ),
     );
   }
-
-  const weeklyConsistencyData = useMemo(
-    () => [
-      { day: "M", value: 72 },
-      { day: "TU", value: 90 },
-      { day: "W", value: 65 },
-      { day: "TH", value: 88 },
-      { day: "F", value: 76 },
-      { day: "SA", value: 94 },
-      { day: "SU", value: completionPercentage },
-    ],
-    [completionPercentage],
-  );
 
   return (
     <PageContainer>
@@ -185,7 +152,6 @@ export function DashboardPageView() {
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
         <TodayMission tasks={tasks} onToggleTask={handleToggleTask} />
-
         <HabitProgressGrid items={habitItems} />
       </div>
 
@@ -193,15 +159,10 @@ export function DashboardPageView() {
         <WeeklyConsistencyChart data={weeklyConsistencyData} />
 
         <WorkoutFocusCard
-          sessionLabel="Evening Session"
-          title="Push Day + Calisthenics Finisher"
-          description="Focus on pressing strength, dips, push-ups, and shoulder endurance."
-          exercises={[
-            "Bench Press",
-            "Incline Dumbbell Press",
-            "Dips",
-            "Push-Up Burnout",
-          ]}
+          sessionLabel={dashboardWorkoutFocus.sessionLabel}
+          title={dashboardWorkoutFocus.title}
+          description={dashboardWorkoutFocus.description}
+          exercises={dashboardWorkoutFocus.exercises}
         />
       </div>
     </PageContainer>
