@@ -8,20 +8,25 @@ type MissionTaskItemProps = {
   title: string;
   subtitle?: string;
   status: MissionTaskStatus;
+  onToggle?: () => void;
 };
 
 export function MissionTaskItem({
   title,
   subtitle,
   status,
+  onToggle,
 }: MissionTaskItemProps) {
   const isDone = status === "done";
   const isMissed = status === "missed";
 
   return (
-    <div
+    <button
+      type="button"
+      onClick={onToggle}
       className={cn(
-        "flex items-center justify-between rounded-2xl border px-4 py-4 transition-all duration-200",
+        "flex w-full items-center justify-between rounded-2xl border px-4 py-4 text-left transition-all duration-200",
+        "focus:outline-none focus:ring-2 focus:ring-emerald-500/30",
         isDone
           ? "border-emerald-500/20 bg-emerald-500/5"
           : isMissed
@@ -72,6 +77,6 @@ export function MissionTaskItem({
       <div className="shrink-0">
         <StatusBadge status={status} />
       </div>
-    </div>
+    </button>
   );
 }

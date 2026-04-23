@@ -2,7 +2,7 @@ import { Panel } from "@/components/shared/panel";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { MissionTaskItem, MissionTaskStatus } from "./mission-task-item";
 
-type MissionTask = {
+export type MissionTask = {
   id: string;
   title: string;
   subtitle?: string;
@@ -11,9 +11,10 @@ type MissionTask = {
 
 type TodayMissionProps = {
   tasks: MissionTask[];
+  onToggleTask: (id: string) => void;
 };
 
-export function TodayMission({ tasks }: TodayMissionProps) {
+export function TodayMission({ tasks, onToggleTask }: TodayMissionProps) {
   const completedCount = tasks.filter((task) => task.status === "done").length;
 
   return (
@@ -30,6 +31,7 @@ export function TodayMission({ tasks }: TodayMissionProps) {
             title={task.title}
             subtitle={task.subtitle}
             status={task.status}
+            onToggle={() => onToggleTask(task.id)}
           />
         ))}
       </div>
