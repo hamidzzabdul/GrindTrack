@@ -8,6 +8,7 @@ import { Panel } from "@/components/shared/panel";
 import { SectionHeading } from "@/components/shared/section-heading";
 import { StatCard } from "@/components/shared/stat-card";
 import { TodayMission } from "./today-mission";
+import { HabitProgressGrid } from "./habit-progress-grid";
 import type { MissionTask } from "./today-mission";
 
 const initialTasks: MissionTask[] = [
@@ -57,13 +58,10 @@ export function DashboardPageView() {
   }, [completedCount, tasks.length]);
 
   const disciplineScore = useMemo(() => {
-    // Simple first version:
-    // mission completion directly drives score
     return completionPercentage;
   }, [completionPercentage]);
 
   const streak = useMemo(() => {
-    // Temporary placeholder until we connect real data
     if (completedCount >= 4) return "12 days";
     if (completedCount >= 2) return "8 days";
     return "3 days";
@@ -75,32 +73,48 @@ export function DashboardPageView() {
     return "Low";
   }, [completedCount]);
 
+  const codingDone =
+    tasks.find((task) => task.title.includes("Coding"))?.status === "done";
+
+  const quranDone =
+    tasks.find((task) => task.title.includes("Quran"))?.status === "done";
+
   const habitItems = useMemo(
     () => [
       {
+        id: "coding",
         label: "Coding",
-        progress:
-          tasks.find((task) => task.title.includes("Coding"))?.status === "done"
-            ? "100%"
-            : "40%",
+        current: codingDone ? 2 : 0.8,
+        target: 2,
+        unit: "hrs",
+        accent: "green" as const,
       },
       {
+        id: "quran",
         label: "Quran",
-        progress:
-          tasks.find((task) => task.title.includes("Quran"))?.status === "done"
-            ? "100%"
-            : "20%",
+        current: quranDone ? 60 : 20,
+        target: 60,
+        unit: "min",
+        accent: "green" as const,
       },
       {
+        id: "water",
         label: "Water",
-        progress: "60%",
+        current: 2.4,
+        target: 4,
+        unit: "L",
+        accent: "green" as const,
       },
       {
+        id: "sleep",
         label: "Sleep",
-        progress: "85%",
+        current: 6.8,
+        target: 8,
+        unit: "hrs",
+        accent: "neutral" as const,
       },
     ],
-    [tasks],
+    [codingDone, quranDone],
   );
 
   function handleToggleTask(id: string) {
@@ -157,32 +171,7 @@ export function DashboardPageView() {
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
         <TodayMission tasks={tasks} onToggleTask={handleToggleTask} />
 
-        <Panel className="p-5">
-          <SectionHeading
-            title="Habit Progress"
-            description="Daily rhythm at a glance."
-          />
-
-          <div className="mt-5 grid grid-cols-2 gap-3">
-            {habitItems.map((item) => (
-              <div
-                key={item.label}
-                className="rounded-2xl border border-white/10 bg-black/40 p-4"
-              >
-                <p className="text-sm text-zinc-300">{item.label}</p>
-                <p className="mt-3 text-2xl font-bold text-emerald-400">
-                  {item.progress}
-                </p>
-                <div className="mt-3 h-2 rounded-full bg-white/5">
-                  <div
-                    className="h-2 rounded-full bg-emerald-500 transition-all duration-300"
-                    style={{ width: item.progress }}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        </Panel>
+        <HabitProgressGrid items={habitItems} />
       </div>
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
