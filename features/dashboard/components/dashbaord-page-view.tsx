@@ -10,6 +10,7 @@ import { StatCard } from "@/components/shared/stat-card";
 import { TodayMission } from "./today-mission";
 import { HabitProgressGrid } from "./habit-progress-grid";
 import type { MissionTask } from "./today-mission";
+import { WorkoutFocusCard } from "@/features/dashboard/components/workout-focus-card";
 
 const initialTasks: MissionTask[] = [
   {
@@ -199,41 +200,17 @@ export function DashboardPageView() {
           </div>
         </Panel>
 
-        <Panel className="p-5">
-          <SectionHeading
-            title="Workout Focus"
-            description="Your next session."
-          />
-
-          <div className="mt-5 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4">
-            <p className="text-xs uppercase tracking-[0.2em] text-emerald-400">
-              Evening Session
-            </p>
-            <h3 className="mt-2 text-xl font-semibold text-white">
-              Push Day + Calisthenics Finisher
-            </h3>
-            <p className="mt-2 text-sm text-zinc-300">
-              Focus on pressing strength, dips, push-ups, and shoulder
-              endurance.
-            </p>
-          </div>
-
-          <div className="mt-4 space-y-3">
-            {[
-              "Bench Press",
-              "Incline Dumbbell Press",
-              "Dips",
-              "Push-Up Burnout",
-            ].map((exercise) => (
-              <div
-                key={exercise}
-                className="rounded-2xl border border-white/10 bg-black/40 px-4 py-3 text-sm text-zinc-300"
-              >
-                {exercise}
-              </div>
-            ))}
-          </div>
-        </Panel>
+        <WorkoutFocusCard
+          sessionLabel="Evening Session"
+          title="Push Day + Calisthenics Finisher"
+          description="Focus on pressing strength, dips, push-ups, and shoulder endurance."
+          exercises={[
+            "Bench Press",
+            "Incline Dumbbell Press",
+            "Dips",
+            "Push-Up Burnout",
+          ]}
+        />
       </div>
     </PageContainer>
   );
