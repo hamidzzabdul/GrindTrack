@@ -11,6 +11,7 @@ import { TodayMission } from "./today-mission";
 import { HabitProgressGrid } from "./habit-progress-grid";
 import type { MissionTask } from "./today-mission";
 import { WorkoutFocusCard } from "@/features/dashboard/components/workout-focus-card";
+import { WeeklyConsistencyChart } from "@/features/progress/components/weekly-consistency-chart";
 
 const initialTasks: MissionTask[] = [
   {
@@ -131,6 +132,19 @@ export function DashboardPageView() {
     );
   }
 
+  const weeklyConsistencyData = useMemo(
+    () => [
+      { day: "M", value: 72 },
+      { day: "TU", value: 90 },
+      { day: "W", value: 65 },
+      { day: "TH", value: 88 },
+      { day: "F", value: 76 },
+      { day: "SA", value: 94 },
+      { day: "SU", value: completionPercentage },
+    ],
+    [completionPercentage],
+  );
+
   return (
     <PageContainer>
       <PageIntro
@@ -176,29 +190,7 @@ export function DashboardPageView() {
       </div>
 
       <div className="mt-6 grid gap-4 xl:grid-cols-3">
-        <Panel className="p-5 xl:col-span-2">
-          <SectionHeading
-            title="Weekly Consistency"
-            description="A simple visual of how disciplined your week has been."
-          />
-
-          <div className="mt-6 flex h-56 items-end gap-3 rounded-2xl border border-white/10 bg-black/30 p-4">
-            {[72, 90, 65, 88, 76, 94, 81].map((height, index) => (
-              <div
-                key={index}
-                className="flex flex-1 flex-col items-center gap-2"
-              >
-                <div
-                  className="w-full rounded-t-xl bg-emerald-500/80"
-                  style={{ height: `${height * 1.5}px` }}
-                />
-                <span className="text-xs text-zinc-500">
-                  {["M", "T", "W", "T", "F", "S", "S"][index]}
-                </span>
-              </div>
-            ))}
-          </div>
-        </Panel>
+        <WeeklyConsistencyChart data={weeklyConsistencyData} />
 
         <WorkoutFocusCard
           sessionLabel="Evening Session"
